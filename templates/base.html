@@ -1,0 +1,34 @@
+<DOCTYPE! html>
+    <html>
+        <head>
+            <title>{{title}}</title>
+            <style type="text/css">
+                .error {
+                    color: red;
+                }
+
+                .nav {
+                    list-style: none;
+                    display: inline;
+                }
+
+                .blogs {
+                    list-style: none;
+                }
+
+                .form {
+                    display: block;
+                }
+            </style>
+        </head>
+
+        <body>
+            <ul> 
+                <li class="nav"><a href="blog">Main Blog Page</a></li>
+                <li class="nav"><a href="new-post">Add New Post</a></li>
+            </ul>
+            {% block content %}
+            {% endblock %}
+
+        </body>
+    </html>
