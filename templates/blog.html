@@ -2,18 +2,18 @@
 
 {% block content %}
 <h1 style="text-align: center;">Build A Blog</h1>
-    {% if current_post %}
-        <ul class="blogs">
-            <li><h2> {{ current_post.title }}</h2></li>
-            <li><p> {{ current_post.body }} </p></li>
-        </ul>
-    {% else %}
-        <ul class="blogs">
-            {% for post in blog_post %}
-            <li><a href="/blog?id={{ post.id }}"><h2>{{ post.title }}</h2></a></li>
-            <li><p>{{ post.body }}</p></li>
-            <hr />
-            {% endfor %}
-        </ul>
-    {% endif %}
+{% if current_post %}
+    <ul class="blogs">
+        <li><h2> {{ current_post.title }}</h2></li>
+        <li><p> {{ current_post.body }} </p></li>
+    </ul>
+{% else %}
+    <ul class="blogs">
+        {% for post in blog_post %}
+        <li><a href="/blog?id={{ post.id }}"><h2>{{ post.title }}</h2></a></li>
+        <li><p>{{ post.body }}</p></li>
+        <hr />
+        {% endfor %}
+    </ul>
+{% endif %}
 {% endblock %}

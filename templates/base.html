@@ -26,7 +26,21 @@
             <ul> 
                 <li class="nav"><a href="blog">Main Blog Page</a></li>
                 <li class="nav"><a href="new-post">Add New Post</a></li>
+                {% if not session %}
+                <li class="nav"><a href="login">Login</a></li>
+                {% elif session %}
+                <li class="nav"><a href="logout">Log out</a></li>
+                {% endif %}
             </ul>
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    <ul class="flashes">
+                    {% for category, message in messages %}
+                        <li class={{category}}>{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
             {% block content %}
             {% endblock %}
 
