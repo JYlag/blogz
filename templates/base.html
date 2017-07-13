@@ -24,11 +24,12 @@
 
         <body>
             <ul> 
+                <li class="nav"><a href="/">Home</a></li>
                 <li class="nav"><a href="blog">Main Blog Page</a></li>
                 <li class="nav"><a href="new-post">Add New Post</a></li>
-                {% if not session %}
+                {% if 'username' not in session %}
                 <li class="nav"><a href="login">Login</a></li>
-                {% elif session %}
+                {% elif 'username' in session %}
                 <li class="nav"><a href="logout">Log out</a></li>
                 {% endif %}
             </ul>

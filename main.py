@@ -2,52 +2,12 @@
 #Created by: Joe Ylagan
 #Partner: Sigala Hernandez
 
-from flask import Flask, redirect, render_template, session, request, flash
-from flask_sqlalchemy import SQLAlchemy
-import cgi
-
-app = Flask(__name__)
-app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:blogz@localhost:8889/blogz'
-app.config['SQLALCHEMY_ECHO'] = True
-
-db = SQLAlchemy(app)
+from flask import redirect, render_template, session, request, flash
+from app import app, db
+from models import User, Blog
+from hashutils import make_salt, make_pw_hash, check_pw_hash
 
 app.secret_key = "Hello"
-
-class Blog(db.Model):
-
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(120), unique=True)
-    body = db.Column(db.String(2000))
-    deleted = db.Column(db.Boolean)
-    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
-    def __init__(self, title, body, owner):
-
-        self.title = title
-        self.body = body
-        self.deleted = False
-        self.owner = owner
-
-    def __repr__(self):
-        return '<Blog %r>' % self.title
-
-class User(db.Model):
-
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(120), unique=True)
-    password = db.Column(db.String(120))
-    blogs = db.relationship('Blog', backref='owner')
-
-    def __init__(self, username, password):
-
-        self.username = username
-        self.password = password
-
-
-    def __repr__(self):
-        return '<User &r' % self.username
 
 def input_is_valid(text):
     return len(text) >= 3 and len(text) <= 20
@@ -58,9 +18,18 @@ def verify_passwords(password,verify_pass):
 def get_blog_posts():
     return Blog.query.filter_by(deleted=False).all()
 
+def get_user_posts(username):
+    
+    user = User.query.filter_by(username=username).first()
+
+    return Blog.query.filter_by(owner_id=user.id).all()
+
+def get_users():
+    return User.query.all()
+
 @app.before_request
 def require_login():
-    allowed_routes = ['login', 'signup']
+    allowed_routes = ['login', 'signup', 'index']
     if request.endpoint not in allowed_routes and 'username' not in session:
         return redirect('/login')
 
@@ -92,7 +61,7 @@ def signup():
                 db.session.add(new_user)
                 db.session.commit()
                 session['username'] = username
-                return redirect('/blog')
+                return redirect('/new-post')
         else:
             flash("Username already exists! Enter a different username", "error")
             return redirect("/signup")
@@ -107,7 +76,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
-        if user and user.password == password:
+        if user and check_pw_hash(password, user.pw_hash):
             session['username'] = username
             flash("Logged In!")
             return redirect("/blog")
@@ -116,10 +85,6 @@ def login():
             return redirect("/login")
 
     return render_template("login.html")
-
-@app.route("/")
-def index():
-    return render_template("index.html")
 
 @app.route("/new-post", methods=['GET'])
 def add_post():
@@ -155,13 +120,26 @@ def post():
 @app.route("/blog", methods=['GET'])
 def blog():
 
-    post_id = request.args.get("id")
-    if request.args.get("id") == None:
-        return redirect("/blog?id=None")
+    user = request.args.get('user')
+    if not user:
+        post_id = request.args.get("id")
+        if not post_id:
+            return redirect("/blog?id=All")
+        current_post = Blog.query.get(post_id)
+        return render_template("blog.html", title="Blog Page",blog_post=get_blog_posts(),current_post=current_post)
+    
+    if get_user_posts(user):
+        user_posts = get_user_posts(user)
+    else:
+        user_posts = "No posts yet"
 
-    current_post = Blog.query.get(post_id)
+    return render_template("blog.html", title="Blog Page",blog_post=get_blog_posts(), user_posts=user_posts)
 
-    return render_template("blog.html", title="Blog Page", blog_post=get_blog_posts(), current_post=current_post)
+@app.route("/", methods=['GET'])
+def index():
+    author = request.args.get("user")
+
+    return render_template("index.html", userlist=get_users())
 
 if __name__ == "__main__":
     app.run()

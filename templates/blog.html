@@ -5,13 +5,28 @@
 {% if current_post %}
     <ul class="blogs">
         <li><h2> {{ current_post.title }}</h2></li>
-        <li><p> {{ current_post.body }} </p></li>
+        <li><p> {{ current_post.body }}</p></li>
+        <li><p>Written by: <a href="/blog?user={{ current_post.owner.username }}">{{ current_post.owner.username }}</a></p></li>
+    </ul>
+{% elif user_posts %}
+    <ul class="blogs">
+    {% if user_posts == "No posts yet" %}
+        <li><h4>{{ user_posts }}</h4></li>
+    {% else %}
+        {% for post in user_posts %}
+        <li><a href="/blog?id={{ post.id }}"><h2>{{ post.title }}</h2></a></li>
+        <li><p>{{ post.body }}</p></li>
+        <li><p>Written by: <a href="/blog?user={{ post.owner.username }}">{{ post.owner.username }}</a></p></li>
+        <hr />
+        {% endfor %}
+    {% endif %}
     </ul>
 {% else %}
     <ul class="blogs">
         {% for post in blog_post %}
         <li><a href="/blog?id={{ post.id }}"><h2>{{ post.title }}</h2></a></li>
         <li><p>{{ post.body }}</p></li>
+        <li><p>Written by: <a href="/blog?user={{ post.owner.username }}">{{ post.owner.username }}</a></p></li>
         <hr />
         {% endfor %}
     </ul>
