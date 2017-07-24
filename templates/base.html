@@ -1,15 +1,12 @@
 <DOCTYPE! html>
     <html>
         <head>
+            <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+            
             <title>{{title}}</title>
             <style type="text/css">
                 .error {
                     color: red;
-                }
-
-                .nav {
-                    list-style: none;
-                    display: inline;
                 }
 
                 .blogs {
@@ -23,16 +20,22 @@
         </head>
 
         <body>
-            <ul> 
-                <li class="nav"><a href="/">Home</a></li>
-                <li class="nav"><a href="blog">Main Blog Page</a></li>
-                <li class="nav"><a href="new-post">Add New Post</a></li>
-                {% if 'username' not in session %}
-                <li class="nav"><a href="login">Login</a></li>
-                {% elif 'username' in session %}
-                <li class="nav"><a href="logout">Log out</a></li>
-                {% endif %}
-            </ul>
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <ul class="nav navbar-nav"> 
+                        <li><a href="/">Home</a></li>
+                        <li><a href="blog">Main Blog Page</a></li>
+                        <li><a href="new-post">Add New Post</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if 'username' not in session %}
+                        <li><a href="login">Login</a></li>
+                        {% elif 'username' in session %}
+                        <li><a href="logout">Log out</a></li>
+                        {% endif %}
+                    </ul>
+                <div class="container-fluid">
+            </nav>
             {% with messages = get_flashed_messages(with_categories=True) %}
                 {% if messages %}
                     <ul class="flashes">

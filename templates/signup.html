@@ -5,24 +5,29 @@
 <form action="/signup" method="post">
     <table>
         <tr>
-            <td><label for="username">Username</label></td>
-            <td>
-                <input name="username" type="text" value="{{ username }}">
-            </td>
+            <div class="container-fluid">
+                <div class="form-group">
+                    <label for="username">Username<input name="username" type="text" value="{{ username }}" class="form-control input-sm"></label>            
+                </div>
+            </div>
         </tr>
         <tr>
-            <td><label for="password">Password</label></td>
-            <td>
-                <input name="password" type="password">
-            </td>
+            <div class="container-fluid">
+                <div class="form-group">
+                    <label for="password">Password<input name="password" type="password" class="form-control input-sm"></label>               
+                </div>
+            </div>
         </tr>
         <tr>
-            <td><label for="verify">Verify Password</label></td>
-            <td>
-                <input name="verify" type="password">
-            </td>
+            <div class="container-fluid">
+                <div class="form-group">
+                    <label for="verify">Verify Password<input name="verify" type="password" class="form-control input-sm"></label>
+                </div>
+            </div>
         </tr>
     </table>
-    <input type="submit" value="Sign up!">
+    <div class="container-fluid">
+        <input type="submit" value="Sign up!">
+    </div>
 </form>
 {% endblock %}
