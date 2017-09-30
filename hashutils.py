@@ -5,7 +5,8 @@ import string
 def make_pw_hash(password, salt=None):
     if not salt:
         salt = make_salt()
-    hash = hashlib.sha256(str.encode(password + salt)).hexdigest()
+    password = password + salt
+    hash = hashlib.sha256(password.encode('ascii')).hexdigest()
     return '{0},{1}'.format(hash,salt)
 
 def check_pw_hash(password, hash):
